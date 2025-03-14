@@ -14,7 +14,7 @@ client_socket, addr = server_socket.accept()
 print(f"Connecté à : {addr}")
 
 
-f = open('E:\\test_video.avi','wb') #open in binary   
+f = open('..\\data\\est_video.avi','wb') #open in binary   
 l = client_socket.recv(1024)
 i = 0
 while (l):

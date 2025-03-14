@@ -14,7 +14,7 @@ client_socket, addr = server_socket.accept()
 print(f"Connecté à : {addr}")
 
 # Ouvrir un fichier CSV pour enregistrer les données
-with open("E:\\Documents\\proj641\\sonar\\laser_data.csv", mode="w", newline="") as file:
+with open("..\\data\\laser_data.csv", mode="w", newline="") as file:
     writer = csv.writer(file)
     #writer.writerow(["Timestamp", "Laser Value"])  # En-tête du fichier CSV
     writer.writerow(["Timestamp"] + [f"Seg0{i}" for i in range(1,16)])
