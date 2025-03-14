@@ -36,18 +36,40 @@ class MyClass(GeneratedClass):
             return
         else:
             while self.running:
-                laser_values = []
+                front_laser_values = []
+                left_laser_values = []
+                right_laser_values = []
                 for i in range(1,16):
                     segnum = "0" + str(i) if i<10 else str(i)
-                    x = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Front/Horizontal/Seg" + segnum + "/X/Sensor/Value")
-                    y = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Front/Horizontal/Seg" + segnum + "/Y/Sensor/Value")
-                    laser_values.append({'x': x, 'y': y})
+                    xf = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Front/Horizontal/Seg" + segnum + "/X/Sensor/Value")
+                    yf = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Front/Horizontal/Seg" + segnum + "/Y/Sensor/Value")
+
+                    xl = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Left/Horizontal/Seg" + segnum + "/X/Sensor/Value")
+                    yl = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Left/Horizontal/Seg" + segnum + "/Y/Sensor/Value")
+
+                    xr = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Right/Horizontal/Seg" + segnum + "/X/Sensor/Value")
+                    yr = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Right/Horizontal/Seg" + segnum + "/Y/Sensor/Value")
+
+                    front_laser_values.append(xf)
+                    front_laser_values.append(yf)
+
+                    left_laser_values.append(xl)
+                    left_laser_values.append(yl)
+
+                    right_laser_values.append(xr)
+                    right_laser_values.append(yr)
                 #laser_values = self.memory.getData("Device/Laser/Value")
                 timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 
                 # Formatage des données sous forme de chaîne CSV
-                message = "{0},".format(timestamp) + ",".join(map(str, laser_values))
-                sock.sendall(message.encode())
+                message_front = "front, {0},".format(timestamp) + ",".join(map(str, front_laser_values))
+                sock.sendall(message_front.encode())
+
+                message_left = "left, {0},".format(timestamp) + ",".join(map(str, left_laser_values))
+                sock.sendall(message_left.encode())
+
+                message_right = "right, {0},".format(timestamp) + ",".join(map(str, right_laser_values))
+                sock.sendall(message_right.encode())
 
                 #self.bang(laser_values)
                 time.sleep(1)
