@@ -15,10 +15,20 @@ filename_front = os.path.join(dirname, "../data/laser/laser_data_front.csv")
 filename_left = os.path.join(dirname, "../data/laser/laser_data_left.csv")
 filename_right = os.path.join(dirname, "../data/laser/laser_data_right.csv")
 
-with open(filename_front) as csvfile:
-    reader = csv.DictReader(csvfile)
+with open(filename_front) as front_file, open(filename_left) as left_file, open(filename_right) as right_file:
+    front_reader = csv.DictReader(front_file)
+    left_reader = csv.DictReader(left_file)
+    right_reader = csv.DictReader(right_file)
     #reader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    for row in reader:
+    for row in front_reader:
+        for i in range (1, 16):
+            X.append(float(row['Seg0' + str(i) + "X"]))
+            Y.append(float(row['Seg0' + str(i) + "Y"]))
+    for row in left_reader:
+        for i in range (1, 16):
+            X.append(float(row['Seg0' + str(i) + "X"]))
+            Y.append(float(row['Seg0' + str(i) + "Y"]))
+    for row in right_reader:
         for i in range (1, 16):
             X.append(float(row['Seg0' + str(i) + "X"]))
             Y.append(float(row['Seg0' + str(i) + "Y"]))
@@ -32,6 +42,8 @@ colors = np.random.uniform(15, 80, len(X))
 
 # plot
 fig, ax = plt.subplots()
+fig.set_figheight(10)
+fig.set_figwidth(10)
 
 ax.scatter(X, Y, s=sizes, c=colors, vmin=0, vmax=100)
 
