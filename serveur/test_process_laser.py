@@ -45,7 +45,7 @@ fig, ax = plt.subplots()
 fig.set_figheight(10)
 fig.set_figwidth(10)
 
-ax.scatter(X, Y, s=sizes, c=colors, vmin=0, vmax=100)
+ax.scatter(X, Y, s=sizes, c=colors, vmin=0, vmax=100, alpha=0.7, cmap='plasma')
 
 ax.set(xlim=(-20, 20), xticks=np.arange(1, 8),
        ylim=(-20, 20), yticks=np.arange(1, 8))
