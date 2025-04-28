@@ -1,6 +1,9 @@
 import time
 import csv
 import socket
+import json
+import sys
+import struct
 
 class MyClass(GeneratedClass):
     def __init__(self):
@@ -20,9 +23,9 @@ class MyClass(GeneratedClass):
     def onInput_onStart(self):
         """Démarre la collecte et l'envoi des données laser vers un serveur."""
 
-        SERVER_IP = "193.48.125.70"
+        SERVER_IP = "193.48.125.69"
         SERVER_PORT = 9558
-    
+
         self.sensors.subscribe("myApplication")
         self.running = True
 
@@ -36,9 +39,9 @@ class MyClass(GeneratedClass):
             return
         else:
             while self.running:
-                front_laser_values = []
-                left_laser_values = []
-                right_laser_values = []
+                front_laser_values = ["front"]
+                left_laser_values = ["left"]
+                right_laser_values = ["right"]
                 for i in range(1,16):
                     segnum = "0" + str(i) if i<10 else str(i)
                     xf = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Front/Horizontal/Seg" + segnum + "/X/Sensor/Value")
@@ -50,26 +53,17 @@ class MyClass(GeneratedClass):
                     xr = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Right/Horizontal/Seg" + segnum + "/X/Sensor/Value")
                     yr = self.memory.getData("Device/SubDeviceList/Platform/LaserSensor/Right/Horizontal/Seg" + segnum + "/Y/Sensor/Value")
 
-                    front_laser_values.append(xf)
-                    front_laser_values.append(yf)
+                    front_laser_values.append((xf, yf))
 
-                    left_laser_values.append(xl)
-                    left_laser_values.append(yl)
+                    left_laser_values.append((xl, yl))
 
-                    right_laser_values.append(xr)
-                    right_laser_values.append(yr)
-                #laser_values = self.memory.getData("Device/Laser/Value")
-                timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+                    right_laser_values.append((xr, yr))
 
                 # Formatage des données sous forme de chaîne CSV
-                message_front = "front, {0},".format(timestamp) + ",".join(map(str, front_laser_values))
-                sock.sendall(message_front.encode())
+                message = json.dumps(front_laser_values + left_laser_values + right_laser_values)
 
-                message_left = "left, {0},".format(timestamp) + ",".join(map(str, left_laser_values))
-                sock.sendall(message_left.encode())
-
-                message_right = "right, {0},".format(timestamp) + ",".join(map(str, right_laser_values))
-                sock.sendall(message_right.encode())
+                message = struct.pack('>I', len(message)) + message
+                sock.sendall(message)
 
                 #self.bang(laser_values)
                 time.sleep(1)
