@@ -129,7 +129,9 @@ def data_from_file_handler(queue):
     with open(filename_camera) as camera_file:
         camera_reader = csv.DictReader(camera_file)
         for row in camera_reader:
-            data = json.loads(row['coordinates'])
+            data = []
+            for str in [row['coordinates']] + row[None]:
+                data.append(json.loads(str))
             if not data:
                     break  # Arrêt si la connexion est fermée
             print(data)
