@@ -124,15 +124,30 @@ def data_handler(queue):
     server_socket.close()
     print("Connexion fermée.")
 
+def data_from_file_handler(queue):
+    filename_camera = os.path.join(dirname, "../data/camera_3d/camera_data.csv")
+    with open(filename_camera) as camera_file:
+        camera_reader = csv.DictReader(camera_file)
+        for row in camera_reader:
+            data = json.loads(row['coordinates'])
+            if not data:
+                    break  # Arrêt si la connexion est fermée
+            print(data)
+            queue.put(data, False) # Ajoute les données à la queue
+            time.sleep(0.3)
+
 
 if __name__ == '__main__':
     # shared pipe
     queue = Queue()
 
     # processes
-    p1 = Process(target=data_handler, args=(queue,))
+    #p1 = Process(target=data_handler, args=(queue,))
     p2 = Process(target=handle_plot, args=(queue,))
-    p1.start()
+    p3 = Process(target=data_from_file_handler, args=(queue,))
+    #p1.start()
+    #p1.join()
     p2.start()
+    p3.start()
     p2.join()
-    p1.join()
+    p3.join()

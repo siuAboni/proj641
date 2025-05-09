@@ -3,6 +3,7 @@ import numpy as np
 import csv
 
 import os
+import json
 
 dirname = os.path.dirname(__file__)
 
@@ -19,19 +20,22 @@ with open(filename_front) as front_file, open(filename_left) as left_file, open(
     front_reader = csv.DictReader(front_file)
     left_reader = csv.DictReader(left_file)
     right_reader = csv.DictReader(right_file)
-    #reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+
     for row in front_reader:
         for i in range (1, 16):
-            X.append(float(row['Seg0' + str(i) + "X"]))
-            Y.append(float(row['Seg0' + str(i) + "Y"]))
+            t = json.loads(row['Seg0' + str(i)])
+            X.append(t[0])
+            Y.append(t[1])
     for row in left_reader:
         for i in range (1, 16):
-            X.append(float(row['Seg0' + str(i) + "X"]))
-            Y.append(float(row['Seg0' + str(i) + "Y"]))
+            t = json.loads(row['Seg0' + str(i)])
+            X.append(t[0])
+            Y.append(t[1])
     for row in right_reader:
         for i in range (1, 16):
-            X.append(float(row['Seg0' + str(i) + "X"]))
-            Y.append(float(row['Seg0' + str(i) + "Y"]))
+            t = json.loads(row['Seg0' + str(i)])
+            X.append(t[0])
+            Y.append(t[1])
 
 X = np.array(X)
 Y = np.array(Y)
